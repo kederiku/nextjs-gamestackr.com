@@ -70,15 +70,26 @@ export interface Config {
     users: User;
     media: Media;
     categories: Category;
+    manufacturers: Manufacturer;
+    platforms: Platform;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
     'payload-migrations': PayloadMigration;
   };
-  collectionsJoins: {};
+  collectionsJoins: {
+    categories: {
+      subcategories: 'categories';
+    };
+    manufacturers: {
+      platforms: 'platforms';
+    };
+  };
   collectionsSelect: {
     users: UsersSelect<false> | UsersSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
     categories: CategoriesSelect<false> | CategoriesSelect<true>;
+    manufacturers: ManufacturersSelect<false> | ManufacturersSelect<true>;
+    platforms: PlatformsSelect<false> | PlatformsSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
     'payload-migrations': PayloadMigrationsSelect<false> | PayloadMigrationsSelect<true>;
@@ -158,6 +169,46 @@ export interface Media {
 export interface Category {
   id: number;
   name: string;
+  slug: string;
+  color?: string | null;
+  parent?: (number | null) | Category;
+  subcategories?: {
+    docs?: (number | Category)[];
+    hasNextPage?: boolean;
+    totalDocs?: number;
+  };
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "manufacturers".
+ */
+export interface Manufacturer {
+  id: number;
+  name: string;
+  slug: string;
+  color?: string | null;
+  platforms?: {
+    docs?: (number | Platform)[];
+    hasNextPage?: boolean;
+    totalDocs?: number;
+  };
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "platforms".
+ */
+export interface Platform {
+  id: number;
+  name: string;
+  slug: string;
+  abbreviation?: string | null;
+  alternative_names?: string | null;
+  type: 'portable' | 'console';
+  manufacturer: number | Manufacturer;
   updatedAt: string;
   createdAt: string;
 }
@@ -179,6 +230,14 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'categories';
         value: number | Category;
+      } | null)
+    | ({
+        relationTo: 'manufacturers';
+        value: number | Manufacturer;
+      } | null)
+    | ({
+        relationTo: 'platforms';
+        value: number | Platform;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -261,6 +320,36 @@ export interface MediaSelect<T extends boolean = true> {
  */
 export interface CategoriesSelect<T extends boolean = true> {
   name?: T;
+  slug?: T;
+  color?: T;
+  parent?: T;
+  subcategories?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "manufacturers_select".
+ */
+export interface ManufacturersSelect<T extends boolean = true> {
+  name?: T;
+  slug?: T;
+  color?: T;
+  platforms?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "platforms_select".
+ */
+export interface PlatformsSelect<T extends boolean = true> {
+  name?: T;
+  slug?: T;
+  abbreviation?: T;
+  alternative_names?: T;
+  type?: T;
+  manufacturer?: T;
   updatedAt?: T;
   createdAt?: T;
 }
