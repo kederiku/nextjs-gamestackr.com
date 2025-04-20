@@ -354,6 +354,237 @@ const manufacturers = [
     }
 ];
 
+const categories = [
+    {
+        name: "All",
+        slug: "all"
+    },
+    {
+        name: "Atari",
+        slug: "atari",
+        color: "#F5F5DC",
+        subcategories: [
+            {
+                name: "Atari 2600",
+                slug: "atari-2600",
+            },
+            {
+                name: "Atari 5200",
+                slug: "atari-5200",
+            },
+            {
+                name: "Atari 7800",
+                slug: "atari-7800",
+            },
+            {
+                name: "Atari Jaguar",
+                slug: "atari-jaguar",
+            },
+            {
+                name: "Atari Lynx",
+                slug: "atari-lynx",
+            },
+        ]
+    },
+    {
+        name: "Sega",
+        slug: "sega",
+        color: "#E0FFFF",
+        subcategories: [
+            {
+                name: "SG-1000",
+                slug: "sg-1000",
+            },
+            {
+                name: "Master System",
+                slug: "master-system",
+            },
+            {
+                name: "Saturn",
+                slug: "saturn",
+            },
+            {
+                name: "Mega Drive",
+                slug: "mega-drive",
+            },
+            {
+                name: "Dreamcast",
+                slug: "dreamcast",
+            },
+            {
+                name: "Game Gear",
+                slug: "game-gear",
+            },
+        ]
+    },
+    {
+        name: "Microsoft",
+        slug: "microsoft",
+        color: "#90EE90",
+        subcategories: [
+            {
+                name: "Xbox",
+                slug: "xbox",
+            },
+            {
+                name: "Xbox 360",
+                slug: "xbox-360",
+            },
+            {
+                name: "Xbox One",
+                slug: "xbox-one",
+            },
+            {
+                name: "Xbox Series X|S",
+                slug: "xbox-x-s",
+            },
+        ]
+    },
+    {
+        name: "Nintendo",
+        slug: "nintendo",
+        color: "#FFC8C8",
+        subcategories: [
+            {
+                name: "Game Boy",
+                slug: "game-boy",
+            },
+            {
+                name: "Game Boy Color",
+                slug: "game-boy-color",
+            },
+            {
+                name: "Game Boy Advance",
+                slug: "game-boy-advance",
+            },
+            {
+                name: "Nintendo DS",
+                slug: "nintendo-ds",
+            },
+            {
+                name: "Nintendo 3DS",
+                slug: "nintendo-3ds",
+            },
+            {
+                name: "Nintendo Entertainment System (NES)",
+                slug: "nintendo-entertainment-system-nes",
+            },
+            {
+                name: "Super Nintendo Entertainment System (SNES)",
+                slug: "super-nintendo-entertainment-system-snes",
+            },
+            {
+                name: "Nintendo 64",
+                slug: "nintendo-64",
+            },
+            {
+                name: "GameCube",
+                slug: "gamecube",
+            },
+            {
+                name: "Wii",
+                slug: "wii",
+            },
+            {
+                name: "Wii U",
+                slug: "wii-u",
+            },
+            {
+                name: "Nintendo Switch",
+                slug: "nintendo-switch",
+            },
+        ]
+    },
+    {
+        name: "Sony",
+        slug: "sony",
+        color: "#ADD8E6",
+        subcategories: [
+            {
+                name: "Playstation",
+                slug: "playstation",
+            },
+            {
+                name: "Playstation 2",
+                slug: "playstation-2",
+            },
+            {
+                name: "Playstation 3",
+                slug: "playstation-3",
+            },
+            {
+                name: "Playstation 4",
+                slug: "playstation-4",
+            },
+            {
+                name: "Playstation 5",
+                slug: "playstation-5",
+            },
+            {
+                name: "Playstation Portable",
+                slug: "playstation-portable",
+            },
+            {
+                name: "Playstation Vita",
+                slug: "playstation-vita",
+            }
+        ]
+    },
+    {
+        name: "NEC",
+        slug: "nec",
+        color: "#E6E6FA",
+        subcategories: [
+            {
+                name: "PC Engine / TurboGrafx-16",
+                slug: "pc-engine-turbografx-16",
+            },
+            {
+                name: "PC-FX",
+                slug: "pc-fx",
+            },
+        ]
+    },
+    {
+        name: "SNK",
+        slug: "snk",
+        color: "#FFDAB9",
+        subcategories: [
+            {
+                name: "Neo Geo AES",
+                slug: "neo-geo-aes",
+            },
+            {
+                name: "Neo Geo CD",
+                slug: "neo-geo-cd",
+            },
+            {
+                name: "Neo Geo Pocket",
+                slug: "neo-geo-pocket",
+            },
+            {
+                name: "Neo Geo Pocket Color",
+                slug: "neo-geo-pocket-color",
+            },
+        ]
+    },
+    {
+        name: "Bandai Namco",
+        slug: "bandai-namco",
+        color: "#FFFACD",
+        subcategories: [
+            {
+                name: "WonderSwan",
+                slug: "wonderswan",
+            },
+            {
+                name: "WonderSwan Color",
+                slug: "wonderswan-color",
+            }
+        ]
+    }
+];
+
 const seed = async () => {
     const payload = await getPayload({ config });
 
@@ -376,6 +607,27 @@ const seed = async () => {
                     abbreviation: plaform.abbreviation,
                     alternative_names: plaform.alternative_names,
                     manufacturer: m.id
+                },
+            });
+        }
+    }
+
+    for (const category of categories){
+        const c = await payload.create({
+            collection: "categories",
+            data: {
+                name: category.name,
+                slug: category.slug,
+                color: category.color,
+            }
+        });
+        for (const subcategorie of category.subcategories || []) {
+            await payload.create({
+                collection: "categories",
+                data: {
+                    name: subcategorie.name,
+                    slug: subcategorie.slug,
+                    parent: c.id
                 },
             });
         }

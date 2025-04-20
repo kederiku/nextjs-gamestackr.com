@@ -1,40 +1,37 @@
-import { Manufacturer } from "@/payload-types";
-import configPromise from "@payload-config"
-import { getPayload } from "payload";
+import { Suspense } from 'react';
+import { dehydrate, HydrationBoundary } from '@tanstack/react-query';
+
+import { getQueryClient, trpc } from "@/trpc/server";
 
 import { Footer } from "./footer";
 import { Navbar } from "./navbar";
-import { SearchFilters } from "./search-filters";
-
+import { SearchFilters, SearchFiltersSkeleton } from "./search-filters";
 
 interface Props {
-  children: React.ReactNode;
+	children: React.ReactNode;
 };
 
 const Layout = async ({ children }: Props) => {
-  const payload = await getPayload({
-    config: configPromise,
-  })
 
-  const data = await payload.find({
-    collection: "manufacturers",
-    depth: 1,
-    pagination: false,
-    sort: "name"
-  });
+	const queryClient = getQueryClient();
+	void queryClient.prefetchQuery(
+    	trpc.categories.getMany.queryOptions(),
+  	);
 
-  const formattedData = data.docs as Manufacturer[];
-
-  return (
-    <div className="flex flex-col min-h-screen">
-      <Navbar />
-      <SearchFilters data={formattedData} />
-      <div className="flex-1 bg-[#F4F4F0]">
-        {children}
-      </div>
-      <Footer />
-    </div>
-  );
+  	return (
+    	<div className="flex flex-col min-h-screen">
+      		<Navbar />
+      		<HydrationBoundary state={dehydrate(queryClient)}>
+				<Suspense fallback={ <SearchFiltersSkeleton /> }>
+					<SearchFilters />
+				</Suspense>
+      		</HydrationBoundary>
+      		<div className="flex-1 bg-[#F4F4F0]">
+        		{children}
+      		</div>
+      		<Footer />
+    	</div>
+  	);
 };
 
 export default Layout;
