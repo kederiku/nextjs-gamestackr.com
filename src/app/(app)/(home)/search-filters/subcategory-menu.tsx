@@ -12,7 +12,7 @@ export const SubcategoryMenu = ({
     isOpen,
     position,
 }: Props) => {
-    if (!isOpen || !category.platforms || category.platforms.length === 0) {
+    if (!isOpen || !category.platforms?.docs || category.platforms.docs.length === 0) {
         return null;
     }
 
@@ -33,10 +33,12 @@ export const SubcategoryMenu = ({
                 className="w-60 text-black rounded-md overflow-hidden border shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] -translate-x-[2px] -translate-y-[2px]"
             >
                 <div>
-                    {category.platforms?.map((platform: Platform) => (
+                    {category.platforms.docs
+                        .filter((platform): platform is Platform => typeof platform === 'object' && platform !== null)
+                        .map((platform) => (
                         <Link 
-                            key={platform.slug} 
-                            href="/"
+                            key={platform.id}
+                            href={`/${category.slug}/${platform.slug}`}
                             className="w-full text-left p-4 hover:bg-black hover:text-white flex justify-between items-center underline font-medium"
                         >
                             {platform.name}
