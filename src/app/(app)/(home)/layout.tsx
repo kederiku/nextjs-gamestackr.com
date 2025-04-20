@@ -1,4 +1,4 @@
-import { Manufacturer, Platform } from "@/payload-types";
+import { Manufacturer } from "@/payload-types";
 import configPromise from "@payload-config"
 import { getPayload } from "payload";
 
@@ -19,15 +19,11 @@ const Layout = async ({ children }: Props) => {
   const data = await payload.find({
     collection: "manufacturers",
     depth: 1,
-    pagination: false
+    pagination: false,
+    sort: "name"
   });
 
-  const formattedData = data.docs.map((manufacturer) => ({
-    ...manufacturer,
-    platforms: (manufacturer.platforms?.docs ?? []).map((platform) => ({
-      ...(platform as Platform),
-    }))
-  }))
+  const formattedData = data.docs as Manufacturer[];
 
   return (
     <div className="flex flex-col min-h-screen">
