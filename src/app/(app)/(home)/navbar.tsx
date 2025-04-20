@@ -1,13 +1,13 @@
 "use client";
 
-import Link from "next/link";
-import { useState } from "react";
 import { MenuIcon } from "lucide-react";
 import { Poppins } from "next/font/google";
+import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useState } from "react";
 
-import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
 import { NavbarSidebar } from "./navbar-sidebar";
 
@@ -23,8 +23,8 @@ interface NavbarItemProps {
 };
 
 const NavbarItem = ({
-  href, 
-  children, 
+  href,
+  children,
   isActive,
 }: NavbarItemProps) => {
   return (
@@ -39,7 +39,7 @@ const NavbarItem = ({
       <Link href={href}>
         {children}
       </Link>
-      
+
     </Button>
   );
 };
@@ -64,7 +64,7 @@ export const Navbar = () => {
         </span>
       </Link>
 
-      <NavbarSidebar 
+      <NavbarSidebar
         items={navbarItems}
         open={isSidebarOpen}
         onOpenChange={setIsSidebarOpen}
@@ -72,7 +72,7 @@ export const Navbar = () => {
 
       <div className="items-center gap-4 hidden lg:flex">
         {navbarItems.map((item) => (
-          <NavbarItem 
+          <NavbarItem
             key={item.href}
             href={item.href}
             isActive={pathname == item.href}
@@ -83,21 +83,21 @@ export const Navbar = () => {
       </div>
 
       <div className="hidden lg:flex">
-        <Button 
+        <Button
           asChild
           variant="secondary"
           className="border-l border-t-0 border-b-0 border-r-0 px-12 h-full rounded-none bg-white hover:bg-pink-400 transition-colors text-lg"
         >
-          <Link href="/sign-in">
+          <Link prefetch href="/sign-in">
             Log in
           </Link>
         </Button>
-        <Button 
+        <Button
           asChild
           variant="secondary"
           className="border-l border-t-0 border-b-0 border-r-0 px-12 h-full rounded-none bg-black text-white hover:bg-pink-400 hover:text-black transition-colors text-lg"
         >
-          <Link href="/sign-up">
+          <Link prefetch href="/sign-up">
             Get Start
           </Link>
         </Button>
