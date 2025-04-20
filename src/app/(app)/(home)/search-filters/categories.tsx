@@ -3,15 +3,13 @@
 import { ListFilterIcon } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
-import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
 import { CategoriesGetManyOutput } from "@/modules/categories/types";
 
-import { CategoryDropdown } from "./category-dropdown";
 import { CategoriesSidebar } from "./categories-sidebar";
-
-
+import { CategoryDropdown } from "./category-dropdown";
 
 interface Props {
     data: CategoriesGetManyOutput
@@ -45,7 +43,7 @@ export const Categories = ({
             let totalWidth = 0;
             let visible = 0;
 
-            for (const item of items){
+            for (const item of items) {
                 const width = item.getBoundingClientRect().width;
 
                 if (totalWidth + width > availableWidth) break;
@@ -65,16 +63,16 @@ export const Categories = ({
         <div className="relative w-full">
             {/* Categories Sidebar */}
             <CategoriesSidebar open={isSidebarOpen} onOpenChange={setIsSidebarOpen} />
-            
+
             {/* Hidden div to measure all items */}
-            <div 
+            <div
                 ref={measureRef}
                 className="absolute opacity-0 pointer-events-none flex"
                 style={{ position: "fixed", top: -9999, left: -9999 }}
             >
                 {data.map((category) => (
                     <div key={category.id}>
-                        <CategoryDropdown 
+                        <CategoryDropdown
                             category={category}
                             isActive={activeCategory === category.slug}
                             isNavigationHovered={false}
@@ -82,9 +80,9 @@ export const Categories = ({
                     </div>
                 ))}
             </div>
-            
+
             {/* Visible items */}
-            <div 
+            <div
                 ref={containerRef}
                 className="flex flex-nowrap items-center"
                 onMouseEnter={() => setIsAnyHovered(true)}
@@ -92,7 +90,7 @@ export const Categories = ({
             >
                 {data.slice(0, visibleCount).map((category) => (
                     <div key={category.id}>
-                        <CategoryDropdown 
+                        <CategoryDropdown
                             category={category}
                             isActive={activeCategory === category.slug}
                             isNavigationHovered={isAnyHovered}

@@ -1,5 +1,5 @@
-import { getPayload } from "payload";
 import config from "@payload-config";
+import { getPayload } from "payload";
 
 const manufacturers = [
     {
@@ -588,7 +588,7 @@ const categories = [
 const seed = async () => {
     const payload = await getPayload({ config });
 
-    for (const manufacturer of manufacturers){
+    for (const manufacturer of manufacturers) {
         const m = await payload.create({
             collection: "manufacturers",
             data: {
@@ -612,7 +612,7 @@ const seed = async () => {
         }
     }
 
-    for (const category of categories){
+    for (const category of categories) {
         const c = await payload.create({
             collection: "categories",
             data: {

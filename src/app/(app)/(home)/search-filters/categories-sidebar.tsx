@@ -1,9 +1,8 @@
-import { useState } from "react";
-import { useRouter } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
 import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 
-import { useTRPC } from "@/trpc/client";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import {
     Sheet,
@@ -11,6 +10,7 @@ import {
     SheetHeader,
     SheetTitle,
 } from "@/components/ui/sheet";
+import { useTRPC } from "@/trpc/client";
 
 import { CategoriesGetManyOutput } from "@/modules/categories/types";
 
@@ -32,8 +32,8 @@ export const CategoriesSidebar = ({
     const [selectedCategory, setSelectedCategory] = useState<CategoriesGetManyOutput[1] | null>(null);
 
     // If we have parent categoriesRouter, show those, otherwise show root categories
-    const currentCategories = parentCategories ?? data ?? []; 
-    
+    const currentCategories = parentCategories ?? data ?? [];
+
     const handleOpenChange = (open: boolean) => {
         // Reset state when closing the sidebar
         setParentCategories(null);
@@ -42,15 +42,15 @@ export const CategoriesSidebar = ({
     };
 
     const handleCategoryClick = (category: CategoriesGetManyOutput[1]) => {
-        if (category.subcategories && category.subcategories.length > 0){
+        if (category.subcategories && category.subcategories.length > 0) {
             setParentCategories(category.subcategories as CategoriesGetManyOutput);
             setSelectedCategory(category);
         } else {
             // This is a leaf category (no category)
-            if (parentCategories && selectedCategory){
+            if (parentCategories && selectedCategory) {
                 // This is a subcategory - navigate to /category/subcategory
                 router.push(`/${selectedCategory.slug}/${category.slug}`);
-            }else {
+            } else {
                 // This is a main category - navigate to /category
                 if (category.slug === "all") {
                     router.push("/");
@@ -63,7 +63,7 @@ export const CategoriesSidebar = ({
     }
 
     const handleBackClick = () => {
-        if (parentCategories){
+        if (parentCategories) {
             setParentCategories(null);
             setSelectedCategory(null);
         }
@@ -85,27 +85,27 @@ export const CategoriesSidebar = ({
                 </SheetHeader>
                 <ScrollArea className="flex flex-col overflow-y-auto h-full pb-2">
                     {parentCategories && (
-                        <button 
+                        <button
                             onClick={handleBackClick}
                             className="w-full text-left p-4 hover:bg-black hover:text-white flex items-center text-base font-medium cursor-pointer"
                         >
-                            <ChevronLeftIcon className="size-4 mr-2"/>
+                            <ChevronLeftIcon className="size-4 mr-2" />
                             Back
                         </button>
                     )}
-                    
+
                     {currentCategories.map((category) => (
-                            <button 
-                                key={category.id}
-                                onClick={() => handleCategoryClick(category)}
-                                className="w-full text-left p-4 hover:bg-black hover:text-white flex justify-between items-center text-base font-medium cursor-pointer"
-                            >
-                                {category.name}
-                                {category.subcategories && category.subcategories.length > 0 && (
-                                    <ChevronRightIcon className="size-4" />
-                                )}
-                            </button>
-                        ))}
+                        <button
+                            key={category.id}
+                            onClick={() => handleCategoryClick(category)}
+                            className="w-full text-left p-4 hover:bg-black hover:text-white flex justify-between items-center text-base font-medium cursor-pointer"
+                        >
+                            {category.name}
+                            {category.subcategories && category.subcategories.length > 0 && (
+                                <ChevronRightIcon className="size-4" />
+                            )}
+                        </button>
+                    ))}
                 </ScrollArea>
             </SheetContent>
         </Sheet>
