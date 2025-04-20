@@ -3,15 +3,16 @@
 import { ListFilterIcon } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
-import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { Manufacturer } from "@/payload-types";
+import { cn } from "@/lib/utils";
 
-import { CategoryDropdown } from "./category-dropdown";
+import { CategoriesGetManyOutput } from "@/modules/categories/types";
+
 import { CategoriesSidebar } from "./categories-sidebar";
+import { CategoryDropdown } from "./category-dropdown";
 
 interface Props {
-    data: Manufacturer[]
+    data: CategoriesGetManyOutput
 };
 
 export const Categories = ({
@@ -42,7 +43,7 @@ export const Categories = ({
             let totalWidth = 0;
             let visible = 0;
 
-            for (const item of items){
+            for (const item of items) {
                 const width = item.getBoundingClientRect().width;
 
                 if (totalWidth + width > availableWidth) break;
@@ -61,41 +62,37 @@ export const Categories = ({
     return (
         <div className="relative w-full">
             {/* Categories Sidebar */}
-            <CategoriesSidebar 
-                open={isSidebarOpen} 
-                onOpenChange={setIsSidebarOpen}
-                data={data}
-            />
-            
+            <CategoriesSidebar open={isSidebarOpen} onOpenChange={setIsSidebarOpen} />
+
             {/* Hidden div to measure all items */}
-            <div 
+            <div
                 ref={measureRef}
                 className="absolute opacity-0 pointer-events-none flex"
                 style={{ position: "fixed", top: -9999, left: -9999 }}
             >
-                {data.map((manufacturer: Manufacturer) => (
-                    <div key={manufacturer.id}>
-                        <CategoryDropdown 
-                            category={manufacturer}
-                            isActive={activeCategory === manufacturer.slug}
+                {data.map((category) => (
+                    <div key={category.id}>
+                        <CategoryDropdown
+                            category={category}
+                            isActive={activeCategory === category.slug}
                             isNavigationHovered={false}
                         />
                     </div>
                 ))}
             </div>
-            
+
             {/* Visible items */}
-            <div 
+            <div
                 ref={containerRef}
                 className="flex flex-nowrap items-center"
                 onMouseEnter={() => setIsAnyHovered(true)}
                 onMouseLeave={() => setIsAnyHovered(false)}
             >
-                {data.slice(0, visibleCount).map((manufacturer: Manufacturer) => (
-                    <div key={manufacturer.id}>
-                        <CategoryDropdown 
-                            category={manufacturer}
-                            isActive={activeCategory === manufacturer.slug}
+                {data.slice(0, visibleCount).map((category) => (
+                    <div key={category.id}>
+                        <CategoryDropdown
+                            category={category}
+                            isActive={activeCategory === category.slug}
                             isNavigationHovered={isAnyHovered}
                         />
                     </div>

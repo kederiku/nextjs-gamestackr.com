@@ -1,18 +1,18 @@
 "use client";
 
+import Link from "next/link";
 import { useRef, useState } from "react";
 
-import { cn } from "@/lib/utils";
-import { Manufacturer } from "@/payload-types";
 import { Button } from "@/components/ui/button";
-import { useDropdownPosition } from "./use-dropdown-position";
+import { cn } from "@/lib/utils";
+
+import { CategoriesGetManyOutput } from "@/modules/categories/types";
+
 import { SubcategoryMenu } from "./subcategory-menu";
-import Link from "next/link";
-
-
+import { useDropdownPosition } from "./use-dropdown-position";
 
 interface Props {
-    category: Manufacturer;
+    category: CategoriesGetManyOutput[1];
     isActive?: boolean;
     isNavigationHovered?: boolean;
 }
@@ -27,7 +27,7 @@ export const CategoryDropdown = ({
     const { getDropdownPosition } = useDropdownPosition(dropdownRef);
 
     const onMouseEnter = () => {
-        if (category.platforms){
+        if (category.subcategories) {
             setIsOpen(true);
         }
     };
@@ -43,16 +43,16 @@ export const CategoryDropdown = ({
     //     }
     // }
 
-    return  (
+    return (
         <div
             className="relative"
             ref={dropdownRef}
             onMouseEnter={onMouseEnter}
             onMouseLeave={onMouseLeave}
-            // onClick={toogleDropdown}
+        // onClick={toogleDropdown}
         >
             <div className="relative">
-                <Button 
+                <Button
                     variant="elevated"
                     className={cn(
                         "h-11 px-4 bg-transparent border-transparent rounded-full hover:bg-white hover:border-primary text-black",
@@ -66,18 +66,18 @@ export const CategoryDropdown = ({
                     >
                         {category.name}
                     </Link>
-                    
+
                 </Button>
-                {category.platforms?.docs && category.platforms.docs.length > 0 && (
-                    <div 
+                {category.subcategories && category.subcategories.length > 0 && (
+                    <div
                         className={cn(
                             "opacity-0 absolute -bottom-3 w-0 h-0 border-l-[10px] border-r-[10px] border-b-[10px] border-l-transparent border-r-transparent border-b-black left-1/2 -translate-x-1/2",
                             isOpen && "opacity-100"
-                        )} 
+                        )}
                     />
                 )}
             </div>
-            <SubcategoryMenu 
+            <SubcategoryMenu
                 category={category}
                 isOpen={isOpen}
                 position={dropdownPosition}

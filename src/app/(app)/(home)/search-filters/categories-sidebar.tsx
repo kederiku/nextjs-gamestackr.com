@@ -1,6 +1,7 @@
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useQuery } from "@tanstack/react-query";
 import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 import { ScrollArea } from "@/components/ui/scroll-area";
 import {
@@ -9,74 +10,66 @@ import {
     SheetHeader,
     SheetTitle,
 } from "@/components/ui/sheet";
+import { useTRPC } from "@/trpc/client";
 
-import { Manufacturer, Platform } from "@/payload-types";
+import { CategoriesGetManyOutput } from "@/modules/categories/types";
 
 interface Props {
     open: boolean;
     onOpenChange: (open: boolean) => void;
-    data: Manufacturer[];
 }
 
 export const CategoriesSidebar = ({
     open,
     onOpenChange,
-    data
 }: Props) => {
+    const trpc = useTRPC();
+    const { data } = useQuery(trpc.categories.getMany.queryOptions());
 
     const router = useRouter();
 
-    // State to hold the currently displayed platforms (subcategories)
-    const [displayedPlatforms, setDisplayedPlatforms] = useState<Platform[] | null>(null);
-    // State to hold the selected manufacturer when viewing platforms
-    const [selectedManufacturer, setSelectedManufacturer] = useState<Manufacturer | null>(null);
+    const [parentCategories, setParentCategories] = useState<CategoriesGetManyOutput | null>(null);
+    const [selectedCategory, setSelectedCategory] = useState<CategoriesGetManyOutput[1] | null>(null);
+
+    // If we have parent categoriesRouter, show those, otherwise show root categories
+    const currentCategories = parentCategories ?? data ?? [];
 
     const handleOpenChange = (open: boolean) => {
         // Reset state when closing the sidebar
-        setSelectedManufacturer(null);
-        setDisplayedPlatforms(null);
+        setParentCategories(null);
+        setSelectedCategory(null);
         onOpenChange(open);
     };
 
-    const handleManufacturerClick = (manufacturer: Manufacturer) => {
-        // Check if platforms exist and filter out non-object types (IDs)
-        const platforms = manufacturer.platforms?.docs?.filter(
-            (p): p is Platform => typeof p === 'object' && p !== null
-        );
-
-        if (platforms && platforms.length > 0) {
-            // If platforms exist, show them as subcategories
-            setDisplayedPlatforms(platforms);
-            setSelectedManufacturer(manufacturer);
+    const handleCategoryClick = (category: CategoriesGetManyOutput[1]) => {
+        if (category.subcategories && category.subcategories.length > 0) {
+            setParentCategories(category.subcategories as CategoriesGetManyOutput);
+            setSelectedCategory(category);
         } else {
-            // This is a leaf manufacturer (no platforms) - navigate
-            if (manufacturer.slug === "all") {
-                router.push("/");
+            // This is a leaf category (no category)
+            if (parentCategories && selectedCategory) {
+                // This is a subcategory - navigate to /category/subcategory
+                router.push(`/${selectedCategory.slug}/${category.slug}`);
             } else {
-                router.push(`/${manufacturer.slug}`);
+                // This is a main category - navigate to /category
+                if (category.slug === "all") {
+                    router.push("/");
+                } else {
+                    router.push(`/${category.slug}`);
+                }
             }
             handleOpenChange(false); // Close sidebar after navigation
         }
     }
 
-    const handlePlatformClick = (platform: Platform) => {
-        if (selectedManufacturer) {
-            // Navigate to /manufacturer/platform
-            router.push(`/${selectedManufacturer.slug}/${platform.slug}`);
-            handleOpenChange(false); // Close sidebar after navigation
+    const handleBackClick = () => {
+        if (parentCategories) {
+            setParentCategories(null);
+            setSelectedCategory(null);
         }
     }
 
-    const handleBackClick = () => {
-        // Go back to the manufacturer list
-        setDisplayedPlatforms(null);
-        setSelectedManufacturer(null);
-    }
-
-    // Determine what to display
-    const isDisplayingPlatforms = displayedPlatforms !== null && selectedManufacturer !== null;
-
-    const backgroundColor = selectedManufacturer?.color || "white";
+    const backgroundColor = selectedCategory?.color || "white";
 
     return (
         <Sheet open={open} onOpenChange={handleOpenChange}>
@@ -87,48 +80,32 @@ export const CategoriesSidebar = ({
             >
                 <SheetHeader className="p-4 border-b">
                     <SheetTitle>
-                        {/* Change title based on context */} 
-                        {isDisplayingPlatforms ? selectedManufacturer.name : "Categories"}
+                        Categories
                     </SheetTitle>
                 </SheetHeader>
                 <ScrollArea className="flex flex-col overflow-y-auto h-full pb-2">
-                    {/* Show back button only when displaying platforms */} 
-                    {isDisplayingPlatforms && (
-                        <button 
+                    {parentCategories && (
+                        <button
                             onClick={handleBackClick}
                             className="w-full text-left p-4 hover:bg-black hover:text-white flex items-center text-base font-medium cursor-pointer"
                         >
-                            <ChevronLeftIcon className="size-4 mr-2"/>
+                            <ChevronLeftIcon className="size-4 mr-2" />
                             Back
                         </button>
                     )}
-                    
-                    {/* Render either manufacturers or platforms */} 
-                    {!isDisplayingPlatforms 
-                        ? data.map((manufacturer) => (
-                            <button 
-                                key={manufacturer.id}
-                                onClick={() => handleManufacturerClick(manufacturer)}
-                                className="w-full text-left p-4 hover:bg-black hover:text-white flex justify-between items-center text-base font-medium cursor-pointer"
-                            >
-                                {manufacturer.name}
-                                {/* Safely check for platforms before showing icon */}
-                                {manufacturer.platforms?.docs && manufacturer.platforms.docs.length > 0 && (
-                                    <ChevronRightIcon className="size-4" />
-                                )}
-                            </button>
-                        ))
-                        : displayedPlatforms.map((platform) => (
-                            <button 
-                                key={platform.id}
-                                onClick={() => handlePlatformClick(platform)}
-                                className="w-full text-left p-4 hover:bg-black hover:text-white flex justify-between items-center text-base font-medium cursor-pointer"
-                            >
-                                {platform.name}
-                                {/* Platforms don't have further subcategories in this logic */} 
-                            </button>
-                        ))
-                    }
+
+                    {currentCategories.map((category) => (
+                        <button
+                            key={category.id}
+                            onClick={() => handleCategoryClick(category)}
+                            className="w-full text-left p-4 hover:bg-black hover:text-white flex justify-between items-center text-base font-medium cursor-pointer"
+                        >
+                            {category.name}
+                            {category.subcategories && category.subcategories.length > 0 && (
+                                <ChevronRightIcon className="size-4" />
+                            )}
+                        </button>
+                    ))}
                 </ScrollArea>
             </SheetContent>
         </Sheet>

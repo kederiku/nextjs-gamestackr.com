@@ -31,7 +31,8 @@ export const Manufacturers: CollectionConfig = {
       type: "join",
       collection: "platforms",
       on: "manufacturer",
-      hasMany: true
+      hasMany: true,
+      defaultLimit: 50,
     },
   ],
 };
