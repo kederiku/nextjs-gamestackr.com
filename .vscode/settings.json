@@ -15,9 +15,9 @@
     "html.format.indentInnerHtml": true,
     "html.format.wrapAttributes": "auto",
     "editor.codeActionsOnSave": {
-        "source.addMissingImports": true,
-        "source.fixAll": true,
-        "source.organizeImports": true
+        "source.addMissingImports": "explicit",
+        "source.fixAll": "explicit",
+        "source.organizeImports": "explicit"
     },
     "explorer.compactFolders": false,
     "files.exclude": {
@@ -29,7 +29,7 @@
     "typescript.preferences.importModuleSpecifier": "non-relative",
     "typescript.updateImportsOnFileMove.enabled": "always",
     "editor.cursorBlinking": "expand",
-    "editor.cursorSmoothCaretAnimation": true,
+    "editor.cursorSmoothCaretAnimation": "on",
     "workbench.colorCustomizations": {
         "editorCursor.foreground": "#3fb950",
         "editor.lineHighlightBorder": "#000000",
@@ -45,7 +45,7 @@
         "tab.activeBorderTop": "#3fb950",
         "terminalCursor.foreground": "#3fb950"
     },
-    "workbench.colorTheme": "Winter is Coming (Dark Blue - No Italics)",
+    "workbench.colorTheme": "Winter is Coming (Dark Black - No Italics)",
     "workbench.iconTheme": "material-icon-theme",
     "editor.tokenColorCustomizations": {
         "textMateRules": [
