@@ -72,6 +72,7 @@ export interface Config {
     categories: Category;
     manufacturers: Manufacturer;
     platforms: Platform;
+    games: Game;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
     'payload-migrations': PayloadMigration;
@@ -90,6 +91,7 @@ export interface Config {
     categories: CategoriesSelect<false> | CategoriesSelect<true>;
     manufacturers: ManufacturersSelect<false> | ManufacturersSelect<true>;
     platforms: PlatformsSelect<false> | PlatformsSelect<true>;
+    games: GamesSelect<false> | GamesSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
     'payload-migrations': PayloadMigrationsSelect<false> | PayloadMigrationsSelect<true>;
@@ -215,6 +217,20 @@ export interface Platform {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "games".
+ */
+export interface Game {
+  id: number;
+  name: string;
+  slug: string;
+  description?: string | null;
+  categories?: (number | Category)[] | null;
+  image?: (number | null) | Media;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-locked-documents".
  */
 export interface PayloadLockedDocument {
@@ -239,6 +255,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'platforms';
         value: number | Platform;
+      } | null)
+    | ({
+        relationTo: 'games';
+        value: number | Game;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -352,6 +372,19 @@ export interface PlatformsSelect<T extends boolean = true> {
   alternative_names?: T;
   type?: T;
   manufacturer?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "games_select".
+ */
+export interface GamesSelect<T extends boolean = true> {
+  name?: T;
+  slug?: T;
+  description?: T;
+  categories?: T;
+  image?: T;
   updatedAt?: T;
   createdAt?: T;
 }
