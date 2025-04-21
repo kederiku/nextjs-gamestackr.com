@@ -4,14 +4,14 @@ import { payloadCloudPlugin } from '@payloadcms/payload-cloud'
 import { lexicalEditor } from '@payloadcms/richtext-lexical'
 import path from 'path'
 import { buildConfig } from 'payload'
-import { fileURLToPath } from 'url'
 import sharp from 'sharp'
+import { fileURLToPath } from 'url'
 
-import { Users } from './collections/Users'
-import { Media } from './collections/Media'
 import { Categories } from './collections/Categories'
 import { Manufacturers } from './collections/Manufacturers'
+import { Media } from './collections/Media'
 import { Platforms } from './collections/Platforms'
+import { Users } from './collections/Users'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -24,13 +24,14 @@ export default buildConfig({
     },
   },
   collections: [
-    Users, 
-    Media, 
+    Users,
+    Media,
     Categories,
     Manufacturers,
     Platforms,
   ],
   editor: lexicalEditor(),
+  cookiePrefix: process.env.PAYLOAD_COOKIE_PREFIX || 'payload',
   secret: process.env.PAYLOAD_SECRET || '',
   typescript: {
     outputFile: path.resolve(dirname, 'payload-types.ts'),
