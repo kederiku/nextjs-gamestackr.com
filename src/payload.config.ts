@@ -8,6 +8,7 @@ import sharp from 'sharp'
 import { fileURLToPath } from 'url'
 
 import { Categories } from './collections/Categories'
+import { Games } from './collections/Games'
 import { Manufacturers } from './collections/Manufacturers'
 import { Media } from './collections/Media'
 import { Platforms } from './collections/Platforms'
@@ -29,6 +30,7 @@ export default buildConfig({
     Categories,
     Manufacturers,
     Platforms,
+    Games,
   ],
   editor: lexicalEditor(),
   cookiePrefix: process.env.PAYLOAD_COOKIE_PREFIX || 'payload',
