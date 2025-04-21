@@ -31,7 +31,10 @@ export const BreadcrumbNavigation = ({
                 asChild
                 className="text-xl font-medium underline text-primary"
               >
-                <Link href={`/${activeCategory}`}>
+                <Link
+                  prefetch
+                  href={`/c/${activeCategory}`}
+                >
                   {activeCategoryName}
                 </Link>
               </BreadcrumbLink>
