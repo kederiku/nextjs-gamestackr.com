@@ -40,13 +40,12 @@ export const gamesRouter = createTRPCRouter({
                 if (parentCategory) {
                     subcategoriesIDs.push(
                         ...parentCategory.subcategories.map((subcategory) => subcategory.id)
-                    )
-                }
+                    );
 
-                where["categories"] = {
-                    in: [parentCategory.id, ...subcategoriesIDs]
+                    where["categories"] = {
+                        in: [parentCategory.id, ...subcategoriesIDs]
+                    }
                 }
-
             }
             const data = await ctx.db.find({
                 collection: "games",
