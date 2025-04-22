@@ -15,7 +15,6 @@ export const gamesRouter = createTRPCRouter({
         .query(async ({ ctx, input }) => {
             const where: Where = {}
 
-            /*
             if (input.minYear && input.maxYear) {
                 where.year = {
                     greater_than_equal: input.minYear,
@@ -30,7 +29,6 @@ export const gamesRouter = createTRPCRouter({
                     less_than_equal: input.maxYear
                 }
             }
-            */
 
             if (input.category) {
                 const categoriesData = await ctx.db.find({
