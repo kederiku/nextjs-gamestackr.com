@@ -18,7 +18,7 @@ export const GameList = ({ category }: Props) => {
       {data?.docs.map((game) => (
         <div key={game.id} className="border rounded-md bg-white p-4">
           <h2 className="text-xl font-medium">{game.name}</h2>
-          <p>{game.year ? game.year : ""}</p>
+          <p>{game.year || ""}</p>
         </div>
       ))}
     </div>
