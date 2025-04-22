@@ -224,6 +224,7 @@ export interface Game {
   name: string;
   slug: string;
   description?: string | null;
+  year?: number | null;
   categories?: (number | Category)[] | null;
   image?: (number | null) | Media;
   updatedAt: string;
@@ -383,6 +384,7 @@ export interface GamesSelect<T extends boolean = true> {
   name?: T;
   slug?: T;
   description?: T;
+  year?: T;
   categories?: T;
   image?: T;
   updatedAt?: T;

@@ -24,6 +24,10 @@ export const Games: CollectionConfig = {
       type: "text",
     },
     {
+      name: "year",
+      type: "number",
+    },
+    {
       name: "categories",
       type: "relationship",
       relationTo: "categories",

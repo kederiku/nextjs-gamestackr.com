@@ -7,11 +7,30 @@ export const gamesRouter = createTRPCRouter({
     getMany: baseProcedure
         .input(
             z.object({
-                category: z.string().nullable().optional()
+                category: z.string().nullable().optional(),
+                minYear: z.string().nullable().optional(),
+                maxYear: z.string().nullable().optional(),
             })
         )
         .query(async ({ ctx, input }) => {
             const where: Where = {}
+
+            /*
+            if (input.minYear && input.maxYear) {
+                where.year = {
+                    greater_than_equal: input.minYear,
+                    less_than_equal: input.maxYear
+                }
+            } else if (input.minYear) {
+                where.year = {
+                    greater_than_equal: input.minYear
+                }
+            } else if (input.maxYear) {
+                where.year = {
+                    less_than_equal: input.maxYear
+                }
+            }
+            */
 
             if (input.category) {
                 const categoriesData = await ctx.db.find({
