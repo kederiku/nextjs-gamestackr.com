@@ -34,6 +34,12 @@ export const Games: CollectionConfig = {
       hasMany: true,
     },
     {
+      name: "genres",
+      type: "relationship",
+      relationTo: "genres",
+      hasMany: true,
+    },
+    {
       name: "image",
       type: "upload",
       relationTo: "media"

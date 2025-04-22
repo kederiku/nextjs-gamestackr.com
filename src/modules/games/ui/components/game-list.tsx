@@ -2,15 +2,19 @@
 
 import { useTRPC } from "@/trpc/client";
 import { useSuspenseQuery } from "@tanstack/react-query";
+import { useGameFilters } from "../../hooks/use-game-filters";
 
 interface Props {
   category?: string;
 }
 
 export const GameList = ({ category }: Props) => {
+  const [filters] = useGameFilters();
+
   const trpc = useTRPC();
   const { data } = useSuspenseQuery(trpc.games.getMany.queryOptions({
     category,
+    ...filters,
   }));
 
   return (
