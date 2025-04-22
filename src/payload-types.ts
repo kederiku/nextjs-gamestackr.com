@@ -73,6 +73,7 @@ export interface Config {
     manufacturers: Manufacturer;
     platforms: Platform;
     games: Game;
+    genres: Genre;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
     'payload-migrations': PayloadMigration;
@@ -92,6 +93,7 @@ export interface Config {
     manufacturers: ManufacturersSelect<false> | ManufacturersSelect<true>;
     platforms: PlatformsSelect<false> | PlatformsSelect<true>;
     games: GamesSelect<false> | GamesSelect<true>;
+    genres: GenresSelect<false> | GenresSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
     'payload-migrations': PayloadMigrationsSelect<false> | PayloadMigrationsSelect<true>;
@@ -226,7 +228,20 @@ export interface Game {
   description?: string | null;
   year?: number | null;
   categories?: (number | Category)[] | null;
+  genres?: (number | Genre)[] | null;
   image?: (number | null) | Media;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "genres".
+ */
+export interface Genre {
+  id: number;
+  name: string;
+  slug: string;
+  games?: (number | Game)[] | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -260,6 +275,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'games';
         value: number | Game;
+      } | null)
+    | ({
+        relationTo: 'genres';
+        value: number | Genre;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -386,7 +405,19 @@ export interface GamesSelect<T extends boolean = true> {
   description?: T;
   year?: T;
   categories?: T;
+  genres?: T;
   image?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "genres_select".
+ */
+export interface GenresSelect<T extends boolean = true> {
+  name?: T;
+  slug?: T;
+  games?: T;
   updatedAt?: T;
   createdAt?: T;
 }

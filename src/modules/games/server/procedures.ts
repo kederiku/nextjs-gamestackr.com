@@ -1,7 +1,8 @@
 import { Category } from "@/payload-types";
 import { baseProcedure, createTRPCRouter } from "@/trpc/init";
-import type { Where } from "payload";
+import type { Sort, Where } from "payload";
 import z from "zod";
+import { sortValues } from "../search-params";
 
 export const gamesRouter = createTRPCRouter({
     getMany: baseProcedure
@@ -10,10 +11,23 @@ export const gamesRouter = createTRPCRouter({
                 category: z.string().nullable().optional(),
                 minYear: z.string().nullable().optional(),
                 maxYear: z.string().nullable().optional(),
+                genres: z.array(z.string()).nullable().optional(),
+                sort: z.enum(sortValues).nullable().optional(),
             })
         )
         .query(async ({ ctx, input }) => {
             const where: Where = {}
+            let sort: Sort = "name"
+
+            if (input.sort === "default") {
+                sort = "name"
+            }
+            if (input.sort === "newest") {
+                sort = "+createdAt"
+            }
+            if (input.sort === "oldest") {
+                sort = "-createdAt"
+            }
 
             if (input.minYear && input.maxYear) {
                 where.year = {
@@ -64,11 +78,18 @@ export const gamesRouter = createTRPCRouter({
                     }
                 }
             }
+
+            if (input.genres && input.genres.length > 0) {
+                where["genres.name"] = {
+                    in: input.genres,
+                }
+            }
+
             const data = await ctx.db.find({
                 collection: "games",
                 depth: 1,
-                sort: "name",
-                where
+                where,
+                sort,
             });
 
             // Artificial delay for development/testing
