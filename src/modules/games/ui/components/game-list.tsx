@@ -23,8 +23,8 @@ export const GameList = ({ category }: Props) => {
     fetchNextPage,
   } = useSuspenseInfiniteQuery(trpc.games.getMany.infiniteQueryOptions(
     {
-      category,
       ...filters,
+      category,
       limit: DEFAULT_LIMIT
     }, {
     getNextPageParam: (lastPage) => {
